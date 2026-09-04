@@ -10,24 +10,34 @@ $(document).ready(function(){
         if (!$toggle.length) return;
 
         $toggle.on('click', function () {
-            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var current = document.documentElement.getAttribute('data-theme') || 'light';
             var next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
+            document.documentElement.style.backgroundColor = next === 'dark' ? '#0f1826' : '#efe7dc';
             localStorage.setItem('portfolio-theme', next);
         });
     }
 
+    function setMobileNav(open) {
+        var $menu = $('.site-header .menu');
+        var $icon = $('.nav-toggle i');
+        var $toggle = $('.nav-toggle');
+        $menu.toggleClass('active', open);
+        $icon.toggleClass('fa-bars', !open).toggleClass('fa-times', open);
+        $toggle.attr('aria-label', open ? 'Close menu' : 'Open menu');
+        $('body').toggleClass('nav-open', open);
+    }
+
     function updateNavbar() {
         var scrolled = window.scrollY > 20;
-        $('.navbar').toggleClass('sticky', scrolled);
+        $('.site-header').toggleClass('sticky', scrolled || $('body').hasClass('nav-open'));
     }
 
     $(window).on('scroll', function () {
         updateNavbar();
 
-        if ($('.navbar .menu').hasClass('active')) {
-            $('.navbar .menu').removeClass('active');
-            $('.nav-toggle i').removeClass('active');
+        if ($('.site-header .menu').hasClass('active')) {
+            setMobileNav(false);
         }
 
         if (window.scrollY > 500) {
@@ -43,17 +53,18 @@ $(document).ready(function(){
         $('html').css("scrollBehavior", "auto");
     });
 
-    $('.navbar .menu li a').click(function(){
+    $('.site-header .menu li a').click(function(){
         $('html').css("scrollBehavior", "smooth");
-        $('.navbar .menu').removeClass("active");
-        $('.nav-toggle i').removeClass("active");
+        setMobileNav(false);
+        updateNavbar();
     });
 
     $('.nav-toggle').on('click keydown', function(e){
         if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
         if (e.type === 'keydown') e.preventDefault();
-        $('.navbar .menu').toggleClass("active");
-        $('.nav-toggle i').toggleClass("active");
+        var willOpen = !$('.site-header .menu').hasClass('active');
+        setMobileNav(willOpen);
+        updateNavbar();
     });
 
     new Typed(".typing", {
