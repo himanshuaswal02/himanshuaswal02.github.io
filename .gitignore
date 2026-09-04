@@ -1,0 +1,5 @@
+# Private config — never commit real API keys
+JS/config.js
+
+# OS files
+.DS_Store

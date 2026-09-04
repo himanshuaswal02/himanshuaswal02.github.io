@@ -1,84 +1,240 @@
-$(document).ready(function () {
-  $(window).scroll(function () {
-    // sticky navbar on scroll script
-    if (this.scrollY > 50) {
-      $(".navbar").addClass("sticky");
-    } else {
-      $(".navbar").removeClass("sticky");
+$(document).ready(function(){
+    var contactConfig = (typeof PORTFOLIO_CONFIG !== 'undefined' && PORTFOLIO_CONFIG.contact)
+        ? PORTFOLIO_CONFIG.contact
+        : { web3formsAccessKey: '', recipientEmail: 'himanshu.aswal002@gmail.com' };
+
+    initThemeToggle();
+
+    function initThemeToggle() {
+        var $toggle = $('#theme-toggle');
+        if (!$toggle.length) return;
+
+        $toggle.on('click', function () {
+            var current = document.documentElement.getAttribute('data-theme') || 'dark';
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('portfolio-theme', next);
+        });
     }
 
-    // scroll-up button show/hide script
-    if (this.scrollY > 1600) {
-      $(".scroll-up-btn").addClass("show");
-    } else {
-      $(".scroll-up-btn").removeClass("show");
+    function updateNavbar() {
+        var scrolled = window.scrollY > 20;
+        $('.navbar').toggleClass('sticky', scrolled);
     }
-  });
 
-  // slide-up script
-  $(".scroll-up-btn").click(function () {
-    $("html").animate({ scrollTop: 0 });
-    // removing smooth scroll on slide-up button click
-    $("html").css("scrollBehavior", "auto");
-  });
+    $(window).on('scroll', function () {
+        updateNavbar();
 
-  $(".navbar .menu li a").click(function () {
-    // applying again smooth scroll on menu items click
-    $("html").css("scrollBehavior", "smooth");
-  });
+        if ($('.navbar .menu').hasClass('active')) {
+            $('.navbar .menu').removeClass('active');
+            $('.nav-toggle i').removeClass('active');
+        }
 
-  // toggle menu/navbar script
-  $(".menu-btn").click(function () {
-    $(".navbar .menu").toggleClass("active");
-    $(".menu-btn i").toggleClass("active");
-  });
+        if (window.scrollY > 500) {
+            $('.scroll-up-btn').addClass('show');
+        } else {
+            $('.scroll-up-btn').removeClass('show');
+        }
+    });
+    updateNavbar();
 
-  // typing text animation script
-  var typed = new Typed(".typing", {
-    strings: [
-      "Mechanical Engineer",
-      "Full Stack Developer",
-      "Lifelong Learner",
-      "Web Designer",
-      "Freelancer"
-    ],
-    typeSpeed: 100,
-    backSpeed: 60,
-    loop: true
-  });
+    $('.scroll-up-btn').click(function(){
+        $('html').animate({scrollTop: 0});
+        $('html').css("scrollBehavior", "auto");
+    });
 
-  var typed = new Typed(".typing-2", {
-    strings: [
-      "Mechanical Engineer",
-      "Full Stack Developer",
-      "Lifelong Learner",
-      "Web Designer",
-      "Freelancer"
-    ],
-    typeSpeed: 100,
-    backSpeed: 60,
-    loop: true
-  });
+    $('.navbar .menu li a').click(function(){
+        $('html').css("scrollBehavior", "smooth");
+        $('.navbar .menu').removeClass("active");
+        $('.nav-toggle i').removeClass("active");
+    });
 
-  // owl carousel script
-  $(".carousel").owlCarousel({
-    margin: 20,
-    loop: true,
-    autoplayTimeOut: 2000,
-    autoplayHoverPause: true,
-    responsive: {
-      0: {
-        items: 1,
-        nav: false
-      },
-      600: {
-        items: 2,
-        nav: false
-      },
-      1000: {
-        items: 3,
-        nav: false
-      }
+    $('.nav-toggle').on('click keydown', function(e){
+        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.type === 'keydown') e.preventDefault();
+        $('.navbar .menu').toggleClass("active");
+        $('.nav-toggle i').toggleClass("active");
+    });
+
+    new Typed(".typing", {
+        strings: [
+            "high-converting Shopify stores",
+            "custom Liquid themes",
+            "multi-region e-commerce",
+            "pixel-perfect storefronts",
+            "scalable online brands"
+        ],
+        typeSpeed: 60,
+        backSpeed: 40,
+        loop: true
+    });
+
+    new Typed(".typing-2", {
+        strings: [
+            "scale online",
+            "convert visitors",
+            "launch faster",
+            "grow revenue",
+            "go global"
+        ],
+        typeSpeed: 80,
+        backSpeed: 50,
+        loop: true
+    });
+
+    new Typed(".typing-3", {
+        strings: ["Let's build your Shopify store :)"],
+        typeSpeed: 80,
+        backSpeed: 40,
+        loop: true
+    });
+
+    renderTestimonials();
+    initProjectsSwiper();
+    initTestimonialsSwiper();
+
+    function initProjectsSwiper() {
+        var el = document.querySelector('.projects-swiper');
+        if (!el || typeof Swiper === 'undefined') return;
+
+        new Swiper('.projects-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            loop: true,
+            grabCursor: true,
+            autoplay: false,
+            navigation: {
+                nextEl: '.projects-swiper .swiper-button-next',
+                prevEl: '.projects-swiper .swiper-button-prev'
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                    spaceBetween: 18
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 20
+                }
+            }
+        });
     }
-  });
+
+    function initTestimonialsSwiper() {
+        var el = document.querySelector('.testimonials-swiper');
+        if (!el || typeof Swiper === 'undefined') return;
+        if (!el.querySelector('.swiper-slide')) return;
+
+        new Swiper(el, {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            loop: true,
+            grabCursor: true,
+            watchOverflow: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true
+            },
+            navigation: {
+                nextEl: el.querySelector('.swiper-button-next'),
+                prevEl: el.querySelector('.swiper-button-prev')
+            },
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+                    spaceBetween: 18
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 20
+                }
+            }
+        });
+    }
+
+    $('#contact-form').on('submit', function(e){
+        e.preventDefault();
+
+        var $form = $(this);
+        var $status = $('#form-status');
+        var $btn = $('#contact-submit');
+        var $btnText = $btn.find('.btn-text');
+        var $btnLoading = $btn.find('.btn-loading');
+        var accessKey = contactConfig.web3formsAccessKey;
+
+        if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+            $status.removeClass('success').addClass('error')
+                .text('Email not configured. Add your key in JS/config.js (see JS/config.example.js).');
+            return;
+        }
+
+        $btn.prop('disabled', true);
+        $btnText.attr('hidden', true);
+        $btnLoading.removeAttr('hidden');
+        $status.removeClass('success error').text('');
+
+        var payload = {
+            access_key: accessKey,
+            name: $('#contact-name').val(),
+            email: $('#contact-email').val(),
+            subject: '[' + $('#contact-service').val() + '] ' + $('#contact-subject').val(),
+            message: $('#contact-message').val(),
+            from_name: 'Portfolio Contact Form',
+            replyto: $('#contact-email').val()
+        };
+
+        fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+            if (data.success) {
+                $status.addClass('success').text('Message sent! I\'ll get back to you within 24 hours.');
+                $form[0].reset();
+            } else {
+                throw new Error(data.message || 'Something went wrong.');
+            }
+        })
+        .catch(function(){
+            $status.addClass('error').text('Failed to send. Please email me at ' + contactConfig.recipientEmail);
+        })
+        .finally(function(){
+            $btn.prop('disabled', false);
+            $btnText.removeAttr('hidden');
+            $btnLoading.attr('hidden', true);
+        });
+    });
+
+    function renderTestimonials() {
+        var $container = $('#testimonials-carousel');
+        if (!$container.length || typeof PORTFOLIO_DATA === 'undefined') return;
+
+        var html = PORTFOLIO_DATA.testimonials.map(function(t) {
+            var stars = '';
+            for (var i = 0; i < t.rating; i++) stars += '<i class="fas fa-star"></i>';
+
+            var projectLink = t.storeUrl
+                ? '<a href="' + t.storeUrl + '" target="_blank" rel="noopener">' + t.project + '</a>'
+                : t.project;
+
+            return (
+                '<div class="swiper-slide">' +
+                    '<article class="testimonial-card">' +
+                        '<div class="testimonial-stars" aria-label="' + t.rating + ' out of 5 stars">' + stars + '</div>' +
+                        '<blockquote class="testimonial-quote"><p>' + t.quote + '</p></blockquote>' +
+                        '<div class="testimonial-author">' +
+                            '<strong>' + t.name + '</strong>' +
+                            '<span>' + t.role + '</span>' +
+                        '</div>' +
+                        '<p class="testimonial-project"><i class="fab fa-shopify" aria-hidden="true"></i> ' + projectLink + '</p>' +
+                    '</article>' +
+                '</div>'
+            );
+        }).join('');
+
+        $container.html(html);
+    }
 });
